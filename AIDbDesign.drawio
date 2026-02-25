@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0" version="29.5.2">
+  <diagram name="Page-1" id="JvQmKZrQrMFr-tW2-FiU">
+    <mxGraphModel dx="1134" dy="1862" grid="0" gridSize="15" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-27" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Schema Constraints&lt;/h1&gt;&lt;p&gt;Can not write across schemas but can read.&amp;nbsp;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="120" width="180" x="308" y="-131" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-32" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;div&gt;&lt;b&gt;Table Relations&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&amp;nbsp;&amp;nbsp;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;1) Backend assigns cameras&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp;The frontend has a UI to assigned Cameras to AI processes&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&amp;nbsp; 2) AI workers pick up assignments&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; Each AI worker:&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; - Reads backend.camera_ai_assignment&lt;/div&gt;&lt;div&gt;&amp;nbsp; - Writes a claim if assigned to self and on&lt;/div&gt;&lt;div&gt;&amp;nbsp; - Removes old claims&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&amp;nbsp; 3) Heartbeats and leases&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; Backend can read ai.camera_claims to see who’s alive and processing.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&amp;nbsp; 4) Rebalancing&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; Backend never writes to AI schema.&lt;/div&gt;&lt;div&gt;&amp;nbsp; To force reassignment:&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; - Backend updates backend.camera_ai_assignment.worked_id to a different worker (or null).&lt;/div&gt;&lt;div&gt;&amp;nbsp; - Existing AI sees it no longer owns the camera and voluntarily stops + releases.&lt;/div&gt;&lt;div&gt;&amp;nbsp; - If it crashes, the lease expires and another AI can claim.&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="760" width="521" x="344" y="474" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-35" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Core AI Loop&lt;/h1&gt;&lt;div&gt;&lt;div&gt;&amp;nbsp; 1. Read backend.camera_ai_assignment to find eligible cameras.&lt;/div&gt;&lt;div&gt;&amp;nbsp; 2. Read ai.camera_claims to see what’s already owned.&lt;/div&gt;&lt;div&gt;&amp;nbsp; 3. Try to claim (insert).&lt;/div&gt;&lt;div&gt;&amp;nbsp; 4. If claimed, run inference and refresh the status periodically.&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="184" width="275" x="30" y="522" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-2" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;" value="&lt;b&gt;Database Tables For AI&lt;/b&gt;" vertex="1">
+          <mxGeometry height="455" width="706" x="30" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-4" parent="1" style="swimlane;whiteSpace=wrap;html=1;" value="Backend Schema" vertex="1">
+          <mxGeometry height="347" width="310" x="60" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-6" parent="BaXh1FdjmdY5n4T8hmAO-4" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Camera_AI_Assignment" vertex="1">
+          <mxGeometry height="90" width="200" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-8" parent="BaXh1FdjmdY5n4T8hmAO-6" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;b&gt;Camera_Id&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="200" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-9" parent="BaXh1FdjmdY5n4T8hmAO-6" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="worker_Id" vertex="1">
+          <mxGeometry height="20" width="200" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-18" parent="BaXh1FdjmdY5n4T8hmAO-6" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="IsEnabled" vertex="1">
+          <mxGeometry height="20" width="200" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-14" parent="BaXh1FdjmdY5n4T8hmAO-4" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="SiteRuleConfig" vertex="1">
+          <mxGeometry height="150" width="200" x="10" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-15" parent="BaXh1FdjmdY5n4T8hmAO-14" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;b&gt;Site_Id&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="200" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-16" parent="BaXh1FdjmdY5n4T8hmAO-14" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="IsEnabled" vertex="1">
+          <mxGeometry height="20" width="200" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-25" parent="BaXh1FdjmdY5n4T8hmAO-14" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="AlertsRecipients" vertex="1">
+          <mxGeometry height="20" width="200" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-26" parent="BaXh1FdjmdY5n4T8hmAO-14" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Models Config (Sensitivity, isEnabled, Schedule)" vertex="1">
+          <mxGeometry height="40" width="200" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-17" parent="BaXh1FdjmdY5n4T8hmAO-14" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="..." vertex="1">
+          <mxGeometry height="20" width="200" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-5" parent="1" style="swimlane;whiteSpace=wrap;html=1;" value="AI Schema" vertex="1">
+          <mxGeometry height="346" width="310" x="400" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-20" parent="BaXh1FdjmdY5n4T8hmAO-5" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Camera_claims" vertex="1">
+          <mxGeometry height="110" width="200" x="14" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-22" parent="BaXh1FdjmdY5n4T8hmAO-20" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;b&gt;Camera_Id&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="200" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-28" parent="BaXh1FdjmdY5n4T8hmAO-20" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Worker_ID" vertex="1">
+          <mxGeometry height="20" width="200" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-23" parent="BaXh1FdjmdY5n4T8hmAO-20" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Last_active" vertex="1">
+          <mxGeometry height="20" width="200" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-29" parent="BaXh1FdjmdY5n4T8hmAO-20" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Status" vertex="1">
+          <mxGeometry height="20" width="200" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-10" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Workers" vertex="1">
+          <mxGeometry height="110" width="200" x="414" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-11" parent="BaXh1FdjmdY5n4T8hmAO-10" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;b&gt;Worker_ID&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="200" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-12" parent="BaXh1FdjmdY5n4T8hmAO-10" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="IsEnabled" vertex="1">
+          <mxGeometry height="20" width="200" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-33" parent="BaXh1FdjmdY5n4T8hmAO-10" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="max_claims" vertex="1">
+          <mxGeometry height="20" width="200" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="BaXh1FdjmdY5n4T8hmAO-13" parent="BaXh1FdjmdY5n4T8hmAO-10" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Last_active" vertex="1">
+          <mxGeometry height="20" width="200" y="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
